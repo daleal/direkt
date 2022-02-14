@@ -4,6 +4,5 @@ module.exports = {
   ],
   pwa: {
     themeColor: '#D81B60',
-    msTileColor: '#272626',
   },
 };
