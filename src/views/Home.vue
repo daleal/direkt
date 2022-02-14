@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-container>
+    <v-container class="mt-6">
       <v-row dense>
         <v-col cols="12">
           <Direction
