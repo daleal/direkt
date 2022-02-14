@@ -4,7 +4,22 @@ import { loadDirections, saveDirections } from '../services/directions';
 
 export const state = () => ({
   directions: loadDirections(),
+  search: '',
 });
+
+export const getters = {
+  filteredDirections(state) {
+    if (state.search.trim() === '') {
+      return state.directions;
+    }
+    return state.directions.filter(
+      (direction) => (
+        direction.owner.toLowerCase().includes(state.search.toLowerCase())
+        || direction.direction.toLowerCase().includes(state.search.toLowerCase())
+      ),
+    );
+  },
+};
 
 export const mutations = {
   addDirection(state, { direction }) {
@@ -16,6 +31,9 @@ export const mutations = {
       ...state.directions.slice(index + 1),
     ];
   },
+  updateSearch(state, { content }) {
+    state.search = content;
+  },
 };
 
 export const actions = {
@@ -26,6 +44,9 @@ export const actions = {
   removeDirection({ commit, state }, index) {
     commit('removeDirection', { index });
     saveDirections(state.directions);
+  },
+  updateSearch({ commit }, content) {
+    commit('updateSearch', { content });
   },
 };
 

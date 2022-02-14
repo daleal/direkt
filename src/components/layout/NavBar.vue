@@ -3,11 +3,26 @@
     color="pink darken-1"
     app
   >
-    <v-toolbar-title>direkt</v-toolbar-title>
+    <div v-if="!searching">
+      <v-toolbar-title>direkt</v-toolbar-title>
 
-    <v-spacer></v-spacer>
+      <v-spacer></v-spacer>
+    </div>
+
+    <v-text-field
+      v-if="searching"
+      v-model="searchText"
+      label="Search..."
+      ref="searchInput"
+      solo
+      flat
+      class="my-auto"
+    />
 
     <NewDirectionForm :open="formOpened" @close="closeForm" />
+    <v-btn icon @click="toggleSearch">
+      <v-icon>{{ searchIcon }}</v-icon>
+    </v-btn>
     <v-btn icon @click="openForm">
       <v-icon>mdi-plus</v-icon>
     </v-btn>
@@ -20,9 +35,16 @@ import NewDirectionForm from '../NewDirectionForm.vue';
 export default {
   data: () => ({
     formOpened: false,
+    searching: false,
+    searchText: '',
   }),
   components: {
     NewDirectionForm,
+  },
+  computed: {
+    searchIcon() {
+      return this.searching ? 'mdi-close' : 'mdi-magnify';
+    },
   },
   methods: {
     openForm() {
@@ -30,6 +52,21 @@ export default {
     },
     closeForm() {
       this.formOpened = false;
+    },
+    toggleSearch() {
+      this.searching = !this.searching;
+      if (this.searching) {
+        this.$nextTick(() => {
+          this.$refs.searchInput.focus();
+        });
+      } else {
+        this.searchText = '';
+      }
+    },
+  },
+  watch: {
+    searchText() {
+      this.$store.dispatch('directions/updateSearch', this.searchText);
     },
   },
 };

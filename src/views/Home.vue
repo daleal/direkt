@@ -17,6 +17,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 import Direction from '../components/Direction.vue';
 
 export default {
@@ -28,9 +30,9 @@ export default {
     formOpened: true,
   }),
   computed: {
-    directions() {
-      return this.$store.state.directions.directions;
-    },
+    ...mapGetters('directions', {
+      directions: 'filteredDirections',
+    }),
   },
   methods: {
     remove(index) {
