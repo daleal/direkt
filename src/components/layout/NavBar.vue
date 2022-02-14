@@ -48,20 +48,28 @@ export default {
   },
   methods: {
     openForm() {
+      this.closeSearch();
       this.formOpened = true;
     },
     closeForm() {
       this.formOpened = false;
     },
     toggleSearch() {
-      this.searching = !this.searching;
       if (this.searching) {
-        this.$nextTick(() => {
-          this.$refs.searchInput.focus();
-        });
+        this.closeSearch();
       } else {
-        this.searchText = '';
+        this.openSearch();
       }
+    },
+    openSearch() {
+      this.searching = true;
+      this.$nextTick(() => {
+        this.$refs.searchInput.focus();
+      });
+    },
+    closeSearch() {
+      this.searching = false;
+      this.searchText = '';
     },
   },
   watch: {
