@@ -1,0 +1,56 @@
+<template>
+  <v-card
+    color="pink darken-1"
+    dark
+  >
+    <v-card-title class="text-h5">
+      {{ direction.owner }}
+    </v-card-title>
+
+    <v-card-subtitle>
+      <strong>{{ direction.direction }}</strong> {{ departmentText }}
+    </v-card-subtitle>
+
+    <v-card-actions>
+      <v-btn
+        text
+        color="black"
+        @click="remove"
+      >
+        Remove
+      </v-btn>
+      <v-btn
+        text
+        @click="maps"
+      >
+        Open in Maps
+      </v-btn>
+    </v-card-actions>
+  </v-card>
+</template>
+
+<script>
+import { geo } from '../services/maps';
+
+export default {
+  props: {
+    direction: {
+      type: Object,
+      required: true,
+    },
+  },
+  computed: {
+    departmentText() {
+      return this.direction.department ? `- ${this.direction.department}` : '';
+    },
+  },
+  methods: {
+    remove() {
+      this.$emit('remove');
+    },
+    maps() {
+      window.open(geo(this.direction.direction));
+    },
+  },
+};
+</script>
