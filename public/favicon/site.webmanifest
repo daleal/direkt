@@ -50,6 +50,8 @@
     ],
     "theme_color": "#d81b60",
     "background_color": "#d81b60",
+    "start_url": "/",
+    "scope": "/",
     "display": "standalone",
     "orientation": "portrait"
 }
