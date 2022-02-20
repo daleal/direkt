@@ -1,5 +1,11 @@
-export const loadDirections = () => JSON.parse(localStorage.getItem('directions') || '[]');
+import { Direction } from '../models/direction';
+
+export const loadDirections = () => {
+  const rawDirections = JSON.parse(localStorage.getItem('directions') || '[]');
+  return rawDirections.map((rawDirection) => new Direction(rawDirection));
+};
 
 export const saveDirections = (directions) => {
-  localStorage.setItem('directions', JSON.stringify(directions));
+  const rawDirections = directions.map((rawDirection) => rawDirection.serialize());
+  localStorage.setItem('directions', JSON.stringify(rawDirections));
 };

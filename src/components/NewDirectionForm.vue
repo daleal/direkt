@@ -43,14 +43,6 @@
                     outlined
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12">
-                  <v-textarea
-                    v-model="content.additionalComments"
-                    label="Additional Comments"
-                    outlined
-                    no-resize
-                  ></v-textarea>
-                </v-col>
               </v-row>
             </v-container>
             <small>*indicates required field</small>
@@ -79,18 +71,13 @@
 </template>
 
 <script>
-const BASE_CONTENT = () => ({
-  owner: '',
-  direction: '',
-  department: '',
-  additionalComments: '',
-});
+import { Direction } from '../models/direction';
 
 export default {
   data: () => ({
     formValid: true,
     submittedOnce: false,
-    content: BASE_CONTENT(),
+    content: Direction.baseData(),
   }),
   computed: {
     validations() {
@@ -107,9 +94,7 @@ export default {
       };
     },
     directionObject() {
-      return Object.fromEntries(
-        Object.entries(this.content).map(([key, value]) => [key, value.trim()]),
-      );
+      return new Direction(this.content);
     },
   },
   props: {
@@ -122,7 +107,7 @@ export default {
     empty() {
       this.formValid = true;
       this.submittedOnce = false;
-      this.content = BASE_CONTENT();
+      this.content = Direction.baseData();
     },
     save($event) {
       $event.preventDefault();
