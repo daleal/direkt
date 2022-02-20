@@ -49,7 +49,13 @@ export default {
       this.$emit('remove');
     },
     maps() {
-      window.open(geo(this.direction.direction));
+      const mode = (
+        ('standalone' in window.navigator) && window.navigator.standalone
+          ? '_top'
+          : '_blank'
+      );
+      const map = window.open(geo(this.direction.direction), mode);
+      map.focus();
     },
   },
 };
