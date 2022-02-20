@@ -25,17 +25,24 @@
       >
         Open in Maps
       </v-btn>
+      <v-btn
+        text
+        @click="share"
+      >
+        Share
+      </v-btn>
     </v-card-actions>
   </v-card>
 </template>
 
 <script>
+import { Direction } from '../models/direction';
 import { geo } from '../services/maps';
 
 export default {
   props: {
     direction: {
-      type: Object,
+      type: Direction,
       required: true,
     },
   },
@@ -56,6 +63,17 @@ export default {
       );
       const map = window.open(geo(this.direction.direction), mode);
       map.focus();
+    },
+    share() {
+      const encoded = Buffer.from(this.direction.toQueryParams()).toString('base64');
+      if (navigator.share) {
+        navigator.share({
+          title: `Direkt - ${this.direction.owner}`,
+          url: `${window.location.origin}/share/${encoded}`,
+        });
+      } else {
+        console.log(`${window.location.origin}/share/${encoded}`);
+      }
     },
   },
 };

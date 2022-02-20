@@ -18,6 +18,13 @@ export class Direction {
     };
   }
 
+  toQueryParams() {
+    const owner = `owner=${encodeURI(this.owner)}`;
+    const direction = `direction=${encodeURI(this.direction)}`;
+    const department = `department=${encodeURI(this.department)}`;
+    return `${owner}&${direction}&${department}`;
+  }
+
   static baseData() {
     return {
       owner: '',
