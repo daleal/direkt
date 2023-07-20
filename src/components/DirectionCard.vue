@@ -7,12 +7,12 @@ import type { Direction } from '@/types';
 const props = defineProps<{ direction: Direction }>();
 
 const emit = defineEmits<{
-  remove: []
+  remove: [],
+  maps: [],
+  share: [],
 }>();
 
 const departmentText = computed(() => (props.direction.department ? `- ${props.direction.department}` : ''));
-
-const remove = () => emit('remove');
 </script>
 
 <template>
@@ -27,19 +27,19 @@ const remove = () => emit('remove');
     <template #actions>
       <GButton
         color="primary"
-        @click="remove"
+        @click="() => emit('remove')"
       >
         Remove
       </GButton>
       <GButton
         color="secondary"
-        @click="() => null"
+        @click="() => emit('maps')"
       >
         Map
       </GButton>
       <GButton
         color="secondary"
-        @click="() => null"
+        @click="() => emit('share')"
       >
         Share
       </GButton>
