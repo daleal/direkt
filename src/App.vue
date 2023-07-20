@@ -1,5 +1,9 @@
+<script setup lang="ts">
+import { GApplication } from 'geometr/components';
+</script>
+
 <template>
-  <div>
-    Nais
-  </div>
+  <GApplication>
+    <router-view />
+  </GApplication>
 </template>
