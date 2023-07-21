@@ -23,7 +23,6 @@ const departmentText = computed(() => (props.direction.department ? `- ${props.d
     <template #subtitle>
       <strong>{{ props.direction.direction }}</strong> {{ departmentText }}
     </template>
-    <template #content />
     <template #actions>
       <GButton
         color="primary"
