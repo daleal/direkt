@@ -16,7 +16,7 @@ const departmentText = computed(() => (props.direction.department ? `- ${props.d
 </script>
 
 <template>
-  <GCard>
+  <GCard class="card">
     <template #header>
       {{ props.direction.owner }}
     </template>
@@ -45,3 +45,9 @@ const departmentText = computed(() => (props.direction.department ? `- ${props.d
     </template>
   </GCard>
 </template>
+
+<style scoped>
+.card {
+  margin-bottom: 1rem;
+}
+</style>
