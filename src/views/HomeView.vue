@@ -1,39 +1,25 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useModal } from 'geometr/composables';
 import { useDirections } from '@/stores/directions';
+import { useDirectionRemovalModal } from '@/composables/directionRemovalModal';
 import { handleMaps } from '@/handlers/maps';
 import { shareDirection } from '@/handlers/share';
 import DirectionCard from '@/components/DirectionCard.vue';
 import DirectionRemovalModal from '@/components/DirectionRemovalModal.vue';
 
-const { directions, removeDirection } = useDirections();
-const { opened, open, close } = useModal();
+const { directions } = useDirections();
 
-const removing = ref<number | null>(null);
-
-const openDirectionRemovalModal = (index: number) => {
-  removing.value = index;
-  open();
-};
-
-const confirmRemoval = () => {
-  if (removing.value !== null) {
-    removeDirection(removing.value);
-    removing.value = null;
-  }
-  close();
-};
-
-const cancelRemoval = () => {
-  removing.value = null;
-  close();
-};
+const {
+  removing,
+  removalModalOpened,
+  openRemovalModal,
+  confirmRemoval,
+  cancelRemoval,
+} = useDirectionRemovalModal();
 </script>
 
 <template>
   <DirectionRemovalModal
-    v-model="opened"
+    v-model="removalModalOpened"
     :direction="directions[removing!]"
     @confirm="confirmRemoval"
     @cancel="cancelRemoval"
@@ -43,7 +29,7 @@ const cancelRemoval = () => {
     :key="index"
     :direction="direction"
     class="card"
-    @remove="() => openDirectionRemovalModal(index)"
+    @remove="() => openRemovalModal(index)"
     @maps="() => handleMaps(direction)"
     @share="() => shareDirection(direction)"
   />
