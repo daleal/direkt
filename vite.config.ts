@@ -4,7 +4,7 @@ import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig({
   plugins: [
-    vue(),
+    vue({ script: { defineModel: true } }),
     VitePWA({ registerType: 'autoUpdate' }),
   ],
   resolve: {
