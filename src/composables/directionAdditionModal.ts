@@ -18,13 +18,13 @@ export const useDirectionAdditionModal = () => {
 
   const createDirection = () => {
     addDirection({ ...newDirection });
-    Object.assign(newDirection, generateBaseDirection());
     close();
+    Object.assign(newDirection, generateBaseDirection());
   };
 
   const cancelDirectionCreation = () => {
-    Object.assign(newDirection, generateBaseDirection());
     close();
+    Object.assign(newDirection, generateBaseDirection());
   };
 
   return {

@@ -9,6 +9,12 @@ const emit = defineEmits<{
   create: [],
   cancel: [],
 }>();
+
+const create = () => {
+  if (!!direction.value.owner && !!direction.value.direction) {
+    emit('create');
+  }
+};
 </script>
 
 <template>
@@ -16,7 +22,10 @@ const emit = defineEmits<{
     v-model="opened"
     persistent
   >
-    <form @submit.prevent="emit('create')">
+    <form
+      novalidate
+      @submit.prevent="create"
+    >
       <div>
         <GInput
           v-model="direction.owner"

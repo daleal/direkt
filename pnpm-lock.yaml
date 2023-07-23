@@ -47,8 +47,8 @@ devDependencies:
     specifier: ^9.15.1
     version: 9.15.1(eslint@8.45.0)
   geometr:
-    specifier: ^0.5.2
-    version: 0.5.2(vue@3.3.4)
+    specifier: ^0.5.3
+    version: 0.5.3(vue@3.3.4)
   typescript:
     specifier: ^5.1.6
     version: 5.1.6
@@ -2962,8 +2962,8 @@ packages:
     engines: {node: '>=6.9.0'}
     dev: true
 
-  /geometr@0.5.2(vue@3.3.4):
-    resolution: {integrity: sha512-7xnbz4pBpd4kz2r0iKg+bfbCj6v3hipZNQNDDlELqi7TEKMuuAbo7/mDa8SaiakVBw4+SjxMXv7A9p7MEFWjRw==}
+  /geometr@0.5.3(vue@3.3.4):
+    resolution: {integrity: sha512-+hojE0EkxMkDoA4HTrrJnC890zZ3fTEQauYlImOxCeTVFlv6dRGKAj9JOPkM8vDc44hBFppZQpCdvMT2hKORQQ==}
     peerDependencies:
       vue: '>=3.0.0'
     dependencies:
