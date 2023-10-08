@@ -8,6 +8,7 @@ const props = defineProps<{ direction: Direction }>();
 
 const emit = defineEmits<{
   remove: [],
+  edit: [],
   maps: [],
   share: [],
 }>();
@@ -29,6 +30,12 @@ const departmentText = computed(() => (props.direction.department ? `- ${props.d
         @click="() => emit('remove')"
       >
         Remove
+      </GButton>
+      <GButton
+        color="primary"
+        @click="() => emit('edit')"
+      >
+        Edit
       </GButton>
       <GButton
         color="secondary"

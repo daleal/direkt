@@ -1,14 +1,22 @@
 <script setup lang="ts">
+import { computed } from 'vue';
 import { GButton, GInput, GModal } from 'geometr/components';
 import type { Direction } from '@/types';
 
 const opened = defineModel<boolean>('opened', { required: true });
 const direction = defineModel<Direction>('direction', { required: true });
 
+const props = withDefaults(
+  defineProps<{ type: 'creation' | 'update' }>(),
+  { type: 'creation' },
+);
+
 const emit = defineEmits<{
   create: [],
   cancel: [],
 }>();
+
+const executeText = computed(() => (props.type === 'creation' ? 'Create' : 'Update'));
 
 const create = () => {
   if (!!direction.value.owner && !!direction.value.direction) {
@@ -51,7 +59,7 @@ const create = () => {
           color="primary"
           type="submit"
         >
-          Create
+          {{ executeText }}
         </GButton>
         <GButton
           color="secondary"

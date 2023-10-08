@@ -22,6 +22,16 @@ export const useDirections = () => {
     directions.value = [...directions.value, direction];
   };
 
+  const updateDirection = (index: number, direction: Direction) => {
+    directions.value = directions.value.map((currentDirection, currentIndex) => {
+      if (currentIndex === index) {
+        return direction;
+      }
+
+      return currentDirection;
+    });
+  };
+
   const removeDirection = (index: number) => {
     directions.value = directions.value.filter((_, currentIndex) => currentIndex !== index);
   };
@@ -29,6 +39,7 @@ export const useDirections = () => {
   return {
     directions,
     addDirection,
+    updateDirection,
     removeDirection,
   };
 };
