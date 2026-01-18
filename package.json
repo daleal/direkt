@@ -25,6 +25,7 @@
     "eslint-import-resolver-typescript": "^3.5.5",
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-vue": "^9.15.1",
+    "fuse.js": "^7.1.0",
     "geometr": "^0.5.4",
     "typescript": "^5.1.6",
     "vite": "^4.4.4",

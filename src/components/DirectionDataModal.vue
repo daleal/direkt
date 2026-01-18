@@ -6,10 +6,7 @@ import type { Direction } from '@/types';
 const opened = defineModel<boolean>('opened', { required: true });
 const direction = defineModel<Direction>('direction', { required: true });
 
-const props = withDefaults(
-  defineProps<{ type: 'creation' | 'update' }>(),
-  { type: 'creation' },
-);
+const props = defineProps<{ type: 'creation' | 'update' }>();
 
 const emit = defineEmits<{
   create: [],

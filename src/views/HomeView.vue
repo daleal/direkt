@@ -1,16 +1,21 @@
 <script setup lang="ts">
-import { GButton } from 'geometr/components';
+
 import { useDirections } from '@/stores/directions';
 import { useDirectionAdditionModal } from '@/composables/directionAdditionModal';
 import { useDirectionEditModal } from '@/composables/directionEditModal';
 import { useDirectionRemovalModal } from '@/composables/directionRemovalModal';
+import { useDirectionSearch } from '@/composables/directionSearch';
 import { handleMaps } from '@/handlers/maps';
 import { shareDirection } from '@/handlers/share';
 import DirectionCard from '@/components/DirectionCard.vue';
 import DirectionRemovalModal from '@/components/DirectionRemovalModal.vue';
 import DirectionDataModal from '@/components/DirectionDataModal.vue';
+import SearchBar from '@/components/SearchBar.vue';
 
 const { directions } = useDirections();
+const {
+  searchQuery, filteredDirections, clearSearch, findOriginalIndex,
+} = useDirectionSearch(directions);
 
 const {
   newDirection, creatingDirection, openCreationModal, createDirection, cancelDirectionCreation,
@@ -24,18 +29,15 @@ const {
 </script>
 
 <template>
-  <GButton
-    color="secondary"
-    class="top-button"
-    @click="openCreationModal"
-  >
-    <template #icon>
-      <span class="mdi mdi-plus" />
-    </template>
-  </GButton>
+  <SearchBar
+    v-model="searchQuery"
+    @clear="clearSearch"
+    @add="openCreationModal"
+  />
   <DirectionDataModal
     v-model:opened="creatingDirection"
     v-model:direction="newDirection"
+    type="creation"
     @create="createDirection"
     @cancel="cancelDirectionCreation"
   />
@@ -53,18 +55,15 @@ const {
     @cancel="cancelRemoval"
   />
   <DirectionCard
-    v-for="(direction, index) in directions"
-    :key="index"
+    v-for="direction in filteredDirections"
+    :key="direction.owner + direction.direction"
     :direction="direction"
-    @remove="() => openRemovalModal(index)"
-    @edit="() => openEditModal(index, direction)"
+    @remove="() => openRemovalModal(findOriginalIndex(direction))"
+    @edit="() => openEditModal(findOriginalIndex(direction), direction)"
     @maps="() => handleMaps(direction)"
     @share="() => shareDirection(direction)"
   />
 </template>
 
 <style scoped>
-.top-button {
-  margin-bottom: 1rem;
-}
 </style>
