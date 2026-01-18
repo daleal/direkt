@@ -6,6 +6,7 @@ import { useDirectionEditModal } from '@/composables/directionEditModal';
 import { useDirectionRemovalModal } from '@/composables/directionRemovalModal';
 import { useDirectionSearch } from '@/composables/directionSearch';
 import { handleMaps } from '@/handlers/maps';
+import { handleUber } from '@/handlers/uber';
 import { shareDirection } from '@/handlers/share';
 import DirectionCard from '@/components/DirectionCard.vue';
 import DirectionRemovalModal from '@/components/DirectionRemovalModal.vue';
@@ -61,6 +62,7 @@ const {
     @remove="() => openRemovalModal(findOriginalIndex(direction))"
     @edit="() => openEditModal(findOriginalIndex(direction), direction)"
     @maps="() => handleMaps(direction)"
+    @uber="() => handleUber(direction)"
     @share="() => shareDirection(direction)"
   />
 </template>
