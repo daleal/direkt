@@ -12,3 +12,17 @@ interface BeforeInstallPromptEvent extends Event {
 interface WindowEventMap {
   beforeinstallprompt: BeforeInstallPromptEvent;
 }
+
+/* Environment Variables */
+
+interface ViteTypeOptions { // eslint-disable-line @typescript-eslint/no-empty-object-type
+  // strictImportMetaEnv: unknown
+}
+
+interface ImportMetaEnv {
+  readonly VITE_RADAR_PUBLISHABLE_API_KEY: string
+}
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv
+}

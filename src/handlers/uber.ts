@@ -1,44 +1,68 @@
 import type { Direction } from '@/types';
+import * as z from 'zod';
+import * as radar from '@/constants/radar';
 
-type GeocodeResult = {
-  lat: string;
-  lon: string;
-  display_name?: string;
-};
+const AddressSchema = z.object({
+  addressLabel: z.string(),
+  number: z.string().optional(),
+  street: z.string(),
+  city: z.string(),
+  county: z.string(),
+  stateCode: z.string(),
+  state: z.string(),
+  countryCode: z.string(),
+  country: z.string(),
+  formattedAddress: z.string(),
+  latitude: z.number(),
+  longitude: z.number(),
+  confidence: z.enum(['exact', 'interpolated', 'fallback']),
+});
 
-const geocode = async (query: string): Promise<GeocodeResult | null> => {
-  const url = `https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q=${encodeURIComponent(query)}`;
+const RadarGeocodeResponseSchema = z.object({
+  addresses: z.array(AddressSchema),
+});
+
+type Address = z.infer<typeof AddressSchema>;
+
+const selectBestAddress = (addresses: Array<Address>) => addresses.find((a) => a.confidence === 'exact')
+  ?? addresses.find((a) => a.confidence === 'interpolated')
+  ?? addresses.find((a) => a.confidence === 'fallback')
+  ?? null;
+
+const geocode = async (query: string) => {
+  const url = `https://api.radar.io/v1/geocode/forward?query=${encodeURIComponent(query)}`;
 
   try {
-    const res = await fetch(url, {
+    const response = await fetch(url, {
       headers: {
         Accept: 'application/json',
+        Authorization: radar.PUBLISHABLE_API_KEY,
       },
     });
 
-    if (!res.ok) return null;
+    if (!response.ok) return null;
 
-    const data = (await res.json()) as GeocodeResult[];
-    return data[0] ?? null;
-  } catch {
+    const data = await response.json();
+    const { addresses } = RadarGeocodeResponseSchema.parse(data);
+
+    return selectBestAddress(addresses);
+  } catch (error) {
     return null;
   }
 };
 
-const generateUberUrl = (address: string, lat?: string, lon?: string, displayName?: string) => {
-  if (lat && lon) {
+const generateUberUrl = (originalQuery: string, address: Address | null) => {
+  if (address) {
     const dropoff = JSON.stringify({
-      latitude: Number(lat),
-      longitude: Number(lon),
-      addressLine1: address,
-      addressLine2: displayName ?? address,
+      latitude: address.latitude,
+      longitude: address.longitude,
+      addressLine1: address.addressLabel,
     });
 
     return `https://m.uber.com/looking?pickup=my_location&drop[0]=${encodeURIComponent(dropoff)}`;
   }
 
-  // Fallback: still open Uber, but prefill may be unreliable without coordinates.
-  const dropoff = JSON.stringify({ addressLine1: address, addressLine2: address });
+  const dropoff = JSON.stringify({ addressLine1: originalQuery, addressLine2: originalQuery });
   return `https://m.uber.com/looking?pickup=my_location&drop[0]=${encodeURIComponent(dropoff)}`;
 };
 
@@ -47,8 +71,8 @@ export const handleUber = async (direction: Direction) => {
 
   const uberWindow = window.open('', mode); // This to be opened immediately to avoid popup blockers
 
-  const geo = await geocode(direction.direction);
-  const url = generateUberUrl(direction.direction, geo?.lat, geo?.lon, geo?.display_name);
+  const address = await geocode(direction.direction);
+  const url = generateUberUrl(direction.direction, address);
 
   if (uberWindow) {
     uberWindow.location.href = url;
