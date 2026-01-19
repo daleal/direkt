@@ -8,6 +8,8 @@ export const useDirectionSearch = (directions: Ref<Direction[]>) => {
   const fuse = computed(() => new Fuse(directions.value, {
     keys: ['owner', 'direction'],
     threshold: 0.3,
+    isCaseSensitive: false,
+    ignoreDiacritics: true,
   }));
 
   const filteredDirections = computed(() => {
