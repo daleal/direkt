@@ -66,6 +66,3 @@ const {
     @share="() => shareDirection(direction)"
   />
 </template>
-
-<style scoped>
-</style>
