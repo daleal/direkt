@@ -13,7 +13,7 @@ const emit = defineEmits<{ clear: [], add: [] }>();
       placeholder="Search by owner or direction"
     />
     <GButton
-      color="secondary"
+      color="primary"
       class="clear-button"
       @click="emit('clear')"
     >
@@ -22,7 +22,7 @@ const emit = defineEmits<{ clear: [], add: [] }>();
       </template>
     </GButton>
     <GButton
-      color="primary"
+      color="secondary"
       class="add-button"
       @click="emit('add')"
     >
