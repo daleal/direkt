@@ -17,6 +17,10 @@ const LocationIqGeocodeResponseSchema = z.array(AddressSchema);
 
 type Address = z.infer<typeof AddressSchema>;
 
+type NavigatorWithStandalone = Navigator & {
+  standalone?: boolean,
+};
+
 const selectBestAddress = (addresses: Array<Address>) => addresses.find((a) => a.matchquality.matchcode === 'exact')
   ?? addresses.find((a) => a.matchquality.matchcode === 'fallback')
   ?? addresses.find((a) => a.matchquality.matchcode === 'approximate')
@@ -68,10 +72,17 @@ const generateUberUrl = (originalQuery: string, address: Address | null) => {
   return `https://m.uber.com/looking?pickup=my_location&drop[0]=${encodeURIComponent(dropoff)}`;
 };
 
-export const handleUber = async (direction: Direction) => {
-  const mode = ('standalone' in window.navigator) && window.navigator.standalone ? '_top' : '_blank';
+const isStandalone = () => window.matchMedia('(display-mode: standalone)').matches
+  || Boolean((window.navigator as NavigatorWithStandalone).standalone);
 
-  const uberWindow = window.open('', mode); // This to be opened immediately to avoid popup blockers
+export const handleUber = async (direction: Direction) => {
+  if (isStandalone()) {
+    const address = await geocode(direction.direction);
+    window.location.href = generateUberUrl(direction.direction, address);
+    return;
+  }
+
+  const uberWindow = window.open('', '_blank'); // This to be opened immediately to avoid popup blockers
 
   const address = await geocode(direction.direction);
   const url = generateUberUrl(direction.direction, address);
@@ -80,6 +91,6 @@ export const handleUber = async (direction: Direction) => {
     uberWindow.location.href = url;
     uberWindow.focus();
   } else {
-    window.open(url, mode)?.focus();
+    window.open(url, '_blank')?.focus();
   }
 };
