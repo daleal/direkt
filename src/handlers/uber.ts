@@ -1,49 +1,51 @@
 import type { Direction } from '@/types';
 import * as z from 'zod';
-import * as radar from '@/constants/radar';
+import * as locationiq from '@/constants/locationiq';
+
+const COUNTRY = 'cl';
 
 const AddressSchema = z.object({
-  addressLabel: z.string(),
-  number: z.string().optional(),
-  street: z.string(),
-  city: z.string(),
-  county: z.string(),
-  stateCode: z.string(),
-  state: z.string(),
-  countryCode: z.string(),
-  country: z.string(),
-  formattedAddress: z.string(),
-  latitude: z.number(),
-  longitude: z.number(),
-  confidence: z.enum(['exact', 'interpolated', 'fallback']),
+  display_name: z.string(),
+  lat: z.coerce.number(),
+  lon: z.coerce.number(),
+  matchquality: z.object({
+    matchcode: z.enum(['exact', 'fallback', 'approximate']),
+  }).optional().default({ matchcode: 'approximate' }),
 });
 
-const RadarGeocodeResponseSchema = z.object({
-  addresses: z.array(AddressSchema),
-});
+const LocationIqGeocodeResponseSchema = z.array(AddressSchema);
 
 type Address = z.infer<typeof AddressSchema>;
 
-const selectBestAddress = (addresses: Array<Address>) => addresses.find((a) => a.confidence === 'exact')
-  ?? addresses.find((a) => a.confidence === 'interpolated')
-  ?? addresses.find((a) => a.confidence === 'fallback')
+const selectBestAddress = (addresses: Array<Address>) => addresses.find((a) => a.matchquality.matchcode === 'exact')
+  ?? addresses.find((a) => a.matchquality.matchcode === 'fallback')
+  ?? addresses.find((a) => a.matchquality.matchcode === 'approximate')
   ?? null;
 
 const geocode = async (query: string) => {
-  const url = `https://api.radar.io/v1/geocode/forward?query=${encodeURIComponent(query)}`;
+  const params = new URLSearchParams({
+    key: locationiq.ACCESS_TOKEN,
+    q: query,
+    countrycodes: COUNTRY,
+    format: 'json',
+    addressdetails: '1',
+    normalizeaddress: '1',
+    matchquality: '1',
+  });
+
+  const url = `https://us1.locationiq.com/v1/search?${params.toString()}`;
 
   try {
     const response = await fetch(url, {
       headers: {
         Accept: 'application/json',
-        Authorization: radar.PUBLISHABLE_API_KEY,
       },
     });
 
     if (!response.ok) return null;
 
     const data = await response.json();
-    const { addresses } = RadarGeocodeResponseSchema.parse(data);
+    const addresses = LocationIqGeocodeResponseSchema.parse(data);
 
     return selectBestAddress(addresses);
   } catch (error) {
@@ -54,9 +56,9 @@ const geocode = async (query: string) => {
 const generateUberUrl = (originalQuery: string, address: Address | null) => {
   if (address) {
     const dropoff = JSON.stringify({
-      latitude: address.latitude,
-      longitude: address.longitude,
-      addressLine1: address.addressLabel,
+      latitude: address.lat,
+      longitude: address.lon,
+      addressLine1: address.display_name,
     });
 
     return `https://m.uber.com/looking?pickup=my_location&drop[0]=${encodeURIComponent(dropoff)}`;

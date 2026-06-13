@@ -20,7 +20,7 @@ interface ViteTypeOptions { // eslint-disable-line @typescript-eslint/no-empty-o
 }
 
 interface ImportMetaEnv {
-  readonly VITE_RADAR_PUBLISHABLE_API_KEY: string
+  readonly VITE_LOCATIONIQ_ACCESS_TOKEN: string
 }
 
 interface ImportMeta {
